@@ -1,0 +1,59 @@
+cau truc web:
+theo mo hinh mvc gom co ( Model - View - Controller)
+Ket noi database Mysql bang hibernate.Thong tin ket noi o trong file WEB-INF/applicationContext.xml:
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/webstore?characterEncoding=utf-8" />
+		<property name="username" value="root" />
+		<property name="password" value="root@1234" />
+	</bean>
+	
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+      <property name="dataSource" ref="dataSource" />
+      <property name="packagesToScan" value="com.webstore.app.entity" />
+      <property name="jpaVendorAdapter">
+         <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" >
+         	<property name="generateDdl" value="true" />
+         </bean>
+      </property>
+      <property name="jpaProperties">
+         <props>
+            <prop key="hibernate.hbm2ddl.auto">validate</prop>
+            <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+         </props>
+      </property>
+   </bean>
+  
+   <bean id="transactionManager"
+		class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	
+
+kem theo la spring data jpa de tuong tac voi du lieu, thay the cho classDAO
+Cac bang trong database se tuong ung voi cac class trong package: com.webstore.app.entity
+vi du: 
+
+
+@Entity (chi dinh day la loai entity)
+@Table(name = "bill") (chi dinh ten bang)
+public class Bill {
+
+  @Id ( khoa chinh)
+  @GeneratedValue(strategy = GenerationType.IDENTITY) (khai bao kieu tu sinh cho khoa chinh theo kieu tang dan)
+  @Column(name = "bill_id") ( ten cot tuong ung)
+  private long      id;
+
+  
+  @Column(name = "user_id")
+  private Long      userId;
+
+
+Phan controller co cac ham su ly, cac controller tra ve view theo dang object: ModelAndView
+day la obj cua spring mvc, no se chua view name va cac tham so co chua du lieu ma minh can hien thi o? giao dien.
+
+Phan shopping cart:su dung httpsession de luu du lieu mua hang cua nguoi dung.Khi nguoi dung truy cap den website cua minh, se duoc cap 1 httpsession trong khoang thoi gian nhat dinh.khi nao session con song thi moi du lieu mua ban deu con, co the thoat website ra vao lai van mua hang tiep binh thuong ko bi mat du lieu cu.Sau khi checkout xong du lieu session se duoc xoa di.
+
